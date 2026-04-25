@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Scenario Loader | Madad Mitra AI</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body style="min-height:100vh; display:flex; align-items:center; justify-content:center; background: radial-gradient(circle at top, #0f172a, #020617); padding:20px;">
+    <div class="glass" style="width:min(760px, 100%); padding:24px; border-radius:16px; border:1px solid rgba(59,130,246,0.35);">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+            <i data-lucide="database-zap" style="color: var(--primary);"></i>
+            <h1 style="font-size:1.2rem; margin:0;">Scenario Data Loader</h1>
+        </div>
+        <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:18px;">
+            Opening this page will immediately clear operational records for a fresh account-like state.
+        </p>
+        <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px;">
+            <a href="index.html" class="btn btn-secondary">Back To Login</a>
+        </div>
+        <div id="seed-log" class="glass" style="padding:12px; border-radius:10px; min-height:180px; max-height:300px; overflow:auto; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size:0.75rem; color:#cbd5e1;">
+            Waiting for action...
+        </div>
+    </div>
+    <script type="module" src="js/seed-data.js"></script>
+    <script>lucide.createIcons();</script>
+</body>
+</html>

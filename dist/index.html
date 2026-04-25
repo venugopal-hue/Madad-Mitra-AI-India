@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Madad Mitra AI | Choose Your Role</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body,
+        html {
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Inter', sans-serif;
+            background: #000;
+        }
+
+        .split-container {
+            display: flex;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        .split {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            text-align: center;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            cursor: default;
+        }
+
+        .split::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0.2;
+            z-index: -1;
+            transition: transform 0.8s ease;
+        }
+
+        .volunteer-side::before {
+            background-image: url('https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&q=80');
+        }
+
+        .ngo-side::before {
+            background-image: url('https://images.unsplash.com/photo-1532629345422-7515f3d16bb8?auto=format&fit=crop&q=80');
+        }
+
+        .split:hover {
+            flex: 1;
+        }
+
+        .split:hover::before {
+            transform: scale(1.1);
+            opacity: 0.4;
+        }
+
+        .volunteer-side {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.3), rgba(0, 0, 0, 0.85));
+            border-right: 1px solid var(--glass-border);
+            overflow: hidden;
+        }
+
+        /* Radar Animation */
+        .radar-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 600px;
+            z-index: 1;
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        .radar-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 50%;
+            animation: radarPulse 4s infinite linear;
+        }
+
+        .radar-ring:nth-child(2) {
+            animation-delay: 1s;
+        }
+
+        .radar-ring:nth-child(3) {
+            animation-delay: 2s;
+        }
+
+        .radar-ring:nth-child(4) {
+            animation-delay: 3s;
+        }
+
+        @keyframes radarPulse {
+            0% {
+                width: 0;
+                height: 0;
+                opacity: 1;
+            }
+
+            100% {
+                width: 100%;
+                height: 100%;
+                opacity: 0;
+            }
+        }
+
+        .radar-sweep {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 300px;
+            height: 300px;
+            background: conic-gradient(from 0deg, rgba(16, 185, 129, 0.4) 0deg, transparent 90deg);
+            border-radius: 50%;
+            transform-origin: top left;
+            animation: radarSweep 4s infinite linear;
+            z-index: 1;
+        }
+
+        @keyframes radarSweep {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .ngo-side {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(0, 0, 0, 0.95));
+        }
+
+        .content {
+            z-index: 10;
+            width: min(100%, 420px);
+            min-height: 420px;
+            animation: fadeIn 0.8s ease;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(5px);
+            padding: 30px;
+            border-radius: var(--radius-lg);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .icon-circle {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+            background: rgba(16, 185, 129, 0.1);
+            border: 2px solid rgba(16, 185, 129, 0.3);
+            margin-left: auto;
+            margin-right: auto;
+            position: relative;
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
+        }
+
+        .icon-badge {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: #10b981;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #000;
+            font-size: 0.7rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+            letter-spacing: -1px;
+        }
+
+        p {
+            color: var(--text-muted);
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            width: 100%;
+        }
+
+        .btn-choice {
+            flex: 1;
+            padding: 14px;
+            border-radius: var(--radius-sm);
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-login {
+            background: transparent;
+            border: 1px solid var(--glass-border);
+            color: white;
+        }
+
+        .btn-login:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--primary);
+        }
+
+        .btn-signup {
+            background: var(--primary);
+            color: white;
+            border: 1px solid var(--primary);
+        }
+
+        .btn-signup:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+        }
+
+        .logo-top {
+            position: absolute;
+            top: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            padding: 12px 24px;
+            border-radius: 99px;
+            border: 1px solid var(--glass-border);
+        }
+
+        @media (max-width: 768px) {
+            body,
+            html {
+                overflow: auto;
+            }
+
+            .split-container {
+                flex-direction: column;
+                min-height: auto;
+                height: auto;
+            }
+
+            h1 {
+                font-size: 1.6rem;
+                margin-bottom: 12px;
+            }
+
+            p {
+                font-size: 0.9rem;
+                margin-bottom: 24px;
+                line-height: 1.5;
+            }
+
+            .split {
+                padding: 24px 16px;
+                min-height: auto;
+                padding-top: 80px;
+                padding-bottom: 40px;
+            }
+
+            .split::before {
+                opacity: 0;
+            }
+
+            .volunteer-side {
+                background: linear-gradient(135deg, rgba(16, 185, 129, 0.5), rgba(0, 20, 15, 0.8)) !important;
+            }
+
+            .ngo-side {
+                background: linear-gradient(135deg, rgba(59, 130, 246, 0.35), rgba(0, 10, 30, 0.85)) !important;
+            }
+
+            .content {
+                padding: 20px;
+                min-height: auto;
+                width: 100%;
+                background: rgba(0, 0, 0, 0.45) !important;
+            }
+
+            .icon-circle {
+                width: 70px;
+                height: 70px;
+                margin-bottom: 16px;
+            }
+
+            .btn-group {
+                gap: 10px;
+            }
+
+            .btn-choice {
+                padding: 12px 10px;
+                font-size: 0.75rem;
+            }
+
+            .logo-top {
+                top: 16px;
+                padding: 10px 16px;
+                font-size: 0.9rem;
+            }
+
+            .radar-container {
+                width: 200px;
+                height: 200px;
+                opacity: 0.08;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.4rem;
+                margin-bottom: 10px;
+            }
+
+            p {
+                font-size: 0.85rem;
+                margin-bottom: 20px;
+            }
+
+            .split {
+                padding: 20px 12px;
+                padding-top: 70px;
+                padding-bottom: 30px;
+            }
+
+            .split::before {
+                opacity: 0;
+            }
+
+            .content {
+                padding: 16px;
+                border-radius: 12px;
+                background: rgba(0, 0, 0, 0.5) !important;
+            }
+
+            .icon-circle {
+                width: 60px;
+                height: 60px;
+                margin-bottom: 12px;
+            }
+
+            .btn-choice {
+                padding: 11px 8px;
+                font-size: 0.7rem;
+                letter-spacing: 0.5px;
+            }
+
+            .radar-container {
+                width: 150px;
+                height: 150px;
+                opacity: 0.05;
+            }
+        }
+
+        .auth-form {
+            display: none;
+            width: min(100%, 390px);
+            animation: fadeIn 0.5s ease;
+            text-align: left;
+            min-height: auto;
+            padding: 22px;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 9px 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-sm);
+            color: white;
+            font-size: 0.85rem;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 20px;
+        }
+
+        .back-btn:hover {
+            color: white;
+        }
+    </style>
+  <script type="module" crossorigin src="/assets/main-5DRnpGan.js"></script>
+  <link rel="modulepreload" crossorigin href="/assets/config-BuoMdFOj.js">
+  <link rel="stylesheet" crossorigin href="/assets/config-CX-xi7fS.css">
+</head>
+
+<body>
+    <canvas id="networkCanvas"
+        style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none;"></canvas>
+
+    <div class="logo-top">
+        <i data-lucide="shield-plus" style="color: var(--primary); width: 24px; height: 24px;"></i>
+        <span style="font-weight: 800; letter-spacing: 3px; font-size: 0.9rem; color: #fff;">MADAD MITRA AI</span>
+    </div>
+
+    <div class="split-container">
+        <!-- Volunteer Side -->
+        <div class="split volunteer-side" id="volunteer-section">
+            <div class="content" id="volunteer-content">
+                <div class="icon-circle">
+                    <i data-lucide="user-round-plus" size="40" style="color: #10b981;"></i>
+                </div>
+                <h1 style="color: #10b981;">I am a Volunteer</h1>
+                <p>Join the frontline of community support. Help nearby neighbors and respond to emergencies.</p>
+                <div class="btn-group">
+                    <button onclick="showAuth('volunteer', 'login')" class="btn-choice btn-login">Login</button>
+                    <button onclick="showAuth('volunteer', 'signup')" class="btn-choice btn-signup"
+                        style="background: #10b981; border-color: #10b981;">Sign Up</button>
+                </div>
+            </div>
+
+            <!-- Volunteer Auth Form -->
+            <div class="content auth-form" id="volunteer-auth">
+                <button class="back-btn" onclick="hideAuth('volunteer')"><i data-lucide="arrow-left"></i> Back</button>
+                <h2 id="volunteer-auth-title" style="margin-bottom: 20px; color: #10b981;">Login</h2>
+                <form id="volunteer-form">
+                    <div class="form-group" id="volunteer-name-group" style="display: none;">
+                        <label>Full Name</label>
+                        <input type="text" id="volunteer-name" placeholder="Enter your name">
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="volunteer-email" placeholder="email@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="volunteer-password" placeholder="********" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary"
+                        style="width: 100%; background: #10b981; border-color: #10b981;"
+                        id="volunteer-submit-btn">Login</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- NGO Side -->
+        <div class="split ngo-side" id="ngo-section">
+            <div class="content" id="ngo-content">
+                <div class="icon-circle" style="background: rgba(59, 130, 246, 0.1); border-color: rgba(59, 130, 246, 0.3); box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);">
+                    <i data-lucide="building-2" size="40" style="color: #3b82f6;"></i>
+                </div>
+                <h1 style="color: #3b82f6;">I am an NGO</h1>
+                <p>Scale your organization's reach. Post missions, coordinate volunteers, and manage community relief in real-time.</p>
+                <div class="btn-group">
+                    <button onclick="showAuth('ngo', 'login')" class="btn-choice btn-login">Login</button>
+                    <button onclick="showAuth('ngo', 'signup')" class="btn-choice btn-signup">Sign Up</button>
+                </div>
+            </div>
+
+            <!-- NGO Auth Form -->
+            <div class="content auth-form" id="ngo-auth">
+                <button class="back-btn" onclick="hideAuth('ngo')"><i data-lucide="arrow-left"></i> Back</button>
+                <h2 id="ngo-auth-title" style="margin-bottom: 20px; color: #3b82f6;">Login</h2>
+                <form id="ngo-form">
+                    <div class="form-group" id="ngo-name-group" style="display: none;">
+                        <label>NGO Name</label>
+                        <input type="text" id="ngo-name" placeholder="Enter NGO name">
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="ngo-email" placeholder="ngo@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="ngo-password" placeholder="********" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;"
+                        id="ngo-submit-btn">Login</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
+

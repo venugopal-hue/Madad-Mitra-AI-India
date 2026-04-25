@@ -1,0 +1,363 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NGO Dashboard | Madad Mitra AI</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar: NGO Controls -->
+        <aside class="sidebar glass">
+            <!-- Heartbeat Sync Bar (Elite Version) -->
+            <div id="heartbeat-indicator" class="glass panel-strip panel-strip-secondary">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <div class="pulse" style="width: 8px; height: 8px; background: var(--secondary); border-radius: 50%; box-shadow: 0 0 10px var(--secondary);"></div>
+                        <span style="font-size: 0.65rem; font-weight: 800; color: var(--secondary); letter-spacing: 2px;">SYSTEM LIVE</span>
+                    </div>
+                    <span id="pulse-timer" style="font-size: 0.6rem; color: var(--text-muted); font-weight: 700;">Syncing...</span>
+                </div>
+                <div style="width: 100%; height: 4px; background: rgba(255,255,255,0.05); border-radius: 2px; overflow: hidden;">
+                    <div id="pulse-bar" style="height: 100%; background: var(--secondary); width: 0%; box-shadow: 0 0 15px var(--secondary-glow); transition: width 10s linear;"></div>
+                </div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <i data-lucide="building-2" style="color: var(--primary);"></i>
+                    <h2 class="sidebar-title">NGO Console</h2>
+                </div>
+                <button id="logout-btn" class="btn btn-secondary" style="padding: 8px 12px; font-size: 0.8rem;">Logout</button>
+            </div>
+
+            <!-- NGO Elite Identity Card -->
+            <div class="glass identity-card" style="position: relative; overflow: hidden;">
+                <div style="position: absolute; top: -10px; right: -10px; opacity: 0.05;">
+                    <i data-lucide="fingerprint" size="80"></i>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px;">
+                    <div>
+                        <h3 id="profile-ngo-name" style="font-size: 1.1rem; font-weight: 800; color: white; letter-spacing: 0.5px; margin-bottom: 4px;">Loading...</h3>
+                        <p id="profile-ngo-code" style="font-size: 0.65rem; color: var(--primary); font-family: monospace; font-weight: 800; letter-spacing: 1px;">MM-XXXX</p>
+                    </div>
+                    <button id="edit-profile-btn" class="glass" style="padding: 8px; border-radius: 50%; color: var(--primary); cursor: pointer; border-color: rgba(59,130,246,0.3);">
+                        <i data-lucide="settings-2" style="width: 16px; height: 16px;"></i>
+                    </button>
+                </div>
+                <p id="profile-ngo-contact" style="font-size: 0.75rem; color: var(--text-muted); display: flex; align-items: center; gap: 6px;">
+                    <i data-lucide="mail" style="width: 12px;"></i> Fetching details...
+                </p>
+            </div>
+
+            <!-- Field Intelligence Briefing -->
+            <div class="glass intel-card">
+                <h3 style="font-size: 0.65rem; color: var(--primary); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px; font-weight: 800;">Field Intelligence</h3>
+                <div class="metric-grid">
+                    <div class="metric-tile">
+                        <p style="font-size: 0.55rem; color: var(--text-muted); margin-bottom: 4px;">ACTIVE ISSUES</p>
+                        <p id="stat-active-issues" style="font-size: 1.1rem; font-weight: 800; color: white;">0</p>
+                    </div>
+                    <div class="metric-tile">
+                        <p style="font-size: 0.55rem; color: var(--text-muted); margin-bottom: 4px;">TOTAL COMPLETED</p>
+                        <p id="stat-total-completed" style="font-size: 1.1rem; font-weight: 800; color: var(--primary);">0</p>
+                    </div>
+                    <div class="metric-tile">
+                        <p style="font-size: 0.55rem; color: var(--text-muted); margin-bottom: 4px;">ACTIVE VOLUNTEERS</p>
+                        <p id="stat-active-volunteers" style="font-size: 1.1rem; font-weight: 800; color: var(--secondary);">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <button id="show-create-modal" class="btn btn-primary" style="width: 100%; margin-bottom: 20px; background: linear-gradient(135deg, #3b82f6, #10b981); border: none;">+ Post New Issue</button>
+
+            <!-- MISSION STATUS TABS -->
+            <div class="section-scroll" style="max-height: calc(100vh - 450px);">
+                <!-- VOLUNTEER REPORTS REVIEW -->
+                <div class="status-section">
+                    <h3 class="status-heading" style="color: #f59e0b;">
+                        Volunteer Reports <span class="status-indicator" style="background: #f59e0b;"></span>
+                    </h3>
+                    <div id="report-review-list" style="display: flex; flex-direction: column; gap: 10px;"></div>
+                </div>
+
+                <!-- ACTIVE SECTION -->
+                <div class="status-section">
+                    <h3 class="status-heading" style="color: var(--accent);">
+                        Active <span class="status-indicator" style="background: var(--accent);"></span>
+                    </h3>
+                    <div id="active-list" style="display: flex; flex-direction: column; gap: 10px;"></div>
+                </div>
+
+                <!-- ASSIGNED SECTION -->
+                <div class="status-section">
+                    <h3 class="status-heading" style="color: var(--primary);">
+                        Assigned <span class="status-indicator" style="background: var(--primary);"></span>
+                    </h3>
+                    <div id="assigned-list" style="display: flex; flex-direction: column; gap: 10px;"></div>
+                </div>
+
+                <!-- REVIEW SECTION -->
+                <div class="status-section">
+                    <h3 class="status-heading" style="color: #8b5cf6;">
+                        Under Review <span class="status-indicator" style="background: #8b5cf6;"></span>
+                    </h3>
+                    <div id="review-list" style="display: flex; flex-direction: column; gap: 10px;"></div>
+                </div>
+
+                <!-- COMPLETED SECTION -->
+                <div class="status-section">
+                    <h3 class="status-heading" style="color: var(--secondary);">
+                        Completed <span class="status-indicator" style="background: var(--secondary);"></span>
+                    </h3>
+                    <div id="completed-list" style="display: flex; flex-direction: column; gap: 10px;"></div>
+                </div>
+
+                <!-- CANCELLED SECTION -->
+                <div class="status-section">
+                    <h3 class="status-heading" style="color: var(--text-muted);">
+                        Cancelled <span class="status-indicator" style="background: var(--text-muted);"></span>
+                    </h3>
+                    <div id="cancelled-list" style="display: flex; flex-direction: column; gap: 10px;"></div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Map Area -->
+        <main style="flex: 1; position: relative;">
+            <div id="map" style="width: 100%; height: 100%;"></div>
+            
+            <!-- Map Controls -->
+            <div style="position: absolute; top: 20px; right: 20px; z-index: 2000; display: flex; flex-direction: column; gap: 10px;">
+                <button id="locate-me-btn" class="btn glass map-control-btn">
+                    <i data-lucide="crosshair"></i>
+                </button>
+                <button id="open-sos-modal-btn" class="btn glass map-control-btn" style="color: #ef4444; border-color: rgba(239, 68, 68, 0.6); box-shadow: 0 0 18px rgba(239, 68, 68, 0.3);">
+                    <i data-lucide="siren"></i>
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <!-- Create Issue Modal -->
+    <div id="create-modal" class="modal" style="display: none; align-items: center; justify-content: center;">
+        <div class="modal-content glass" style="width: 90%; max-width: 500px; padding: 25px; border-radius: var(--radius-lg); position: relative;">
+            <button id="close-modal" style="position: absolute; top: 15px; right: 15px; background: none; border: none; color: white; cursor: pointer;"><i data-lucide="x"></i></button>
+            <h2 style="margin-bottom: 20px;">Post New Issue</h2>
+            <form id="issue-form">
+                <div class="input-group">
+                    <label>Issue Title</label>
+                    <input type="text" id="issue-title" placeholder="e.g. Flood Relief, Medical Emergency" required>
+                </div>
+                <div class="input-group">
+                    <label>Description</label>
+                    <textarea id="issue-desc" rows="4" placeholder="Describe the situation..." required></textarea>
+                </div>
+                <div class="issue-form-row">
+                    <div class="input-group" style="flex: 1; margin-bottom: 0;">
+                        <label>Issue Type</label>
+                        <select id="issue-category">
+                            <option value="medical-emergency">Medical Emergency</option>
+                            <option value="road-accident">Road Accident</option>
+                            <option value="fire-response">Fire Response</option>
+                            <option value="flood-relief">Flood Relief</option>
+                            <option value="food-distribution">Food Distribution</option>
+                            <option value="water-shortage">Water Shortage</option>
+                            <option value="elderly-support">Elderly Support</option>
+                            <option value="child-support">Child Support</option>
+                            <option value="missing-person">Missing Person Search</option>
+                            <option value="blood-donation">Blood Donation Need</option>
+                            <option value="rescue-evacuation">Rescue / Evacuation</option>
+                            <option value="shelter-support">Shelter Support</option>
+                        </select>
+                    </div>
+                    <div class="input-group" style="flex: 1; margin-bottom: 0;">
+                        <label>Urgency</label>
+                        <select id="issue-urgency">
+                            <option value="low">Low</option>
+                            <option value="medium">Medium</option>
+                            <option value="high">High</option>
+                            <option value="critical">Critical</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="issue-form-grid">
+                    <div class="input-group" style="margin-bottom: 0;">
+                        <label>Minimum Age</label>
+                        <input type="number" id="issue-min-age" min="18" max="80" value="18">
+                    </div>
+                    <div class="input-group" style="margin-bottom: 0;">
+                        <label>Language Needed</label>
+                        <select id="issue-language">
+                            <option value="any">Any</option>
+                            <option value="hindi">Hindi</option>
+                            <option value="english">English</option>
+                            <option value="telugu">Telugu</option>
+                            <option value="tamil">Tamil</option>
+                            <option value="kannada">Kannada</option>
+                            <option value="marathi">Marathi</option>
+                            <option value="bengali">Bengali</option>
+                        </select>
+                    </div>
+                    <div class="input-group" style="margin-bottom: 0;">
+                        <label>Min Experience (Years)</label>
+                        <input type="number" id="issue-min-experience" min="0" max="30" value="0">
+                    </div>
+                    <div class="input-group" style="margin-bottom: 0;">
+                        <label>Preferred Profession</label>
+                        <select id="issue-profession">
+                            <option value="any">Any</option>
+                            <option value="medical">Medical</option>
+                            <option value="driver">Driver</option>
+                            <option value="rescue">Rescue Worker</option>
+                            <option value="logistics">Logistics</option>
+                            <option value="teacher">Teacher</option>
+                            <option value="social-worker">Social Worker</option>
+                            <option value="it-support">IT Support</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Required Skills (comma-separated)</label>
+                    <input type="text" id="issue-required-skills" placeholder="e.g. First Aid, Driving, Logistics">
+                </div>
+                
+                <div id="ocr-section" style="margin-bottom: 15px; background: rgba(59, 130, 246, 0.05); padding: 15px; border-radius: 10px; border: 1px dashed var(--primary);">
+                    <label style="display: block; font-size: 0.75rem; font-weight: 700; margin-bottom: 10px; color: var(--primary);">AI PHOTO ANALYSIS (OPTIONAL)</label>
+                    <input type="file" id="issue-image" accept="image/*" style="font-size: 0.7rem; color: var(--text-muted);">
+                    <div id="ocr-preview" style="display: none; margin-top: 10px;">
+                        <button type="button" id="extract-text-btn" class="btn btn-secondary" style="padding: 5px 10px; font-size: 0.7rem;">Extract Text</button>
+                        <textarea id="issue-ocr-result" rows="2" style="margin-top: 10px; font-size: 0.7rem; width: 100%;" placeholder="Extracted text will appear here..."></textarea>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Location</label>
+                    <button type="button" id="pick-location-btn" class="btn btn-secondary" style="width: 100%; padding: 12px;">Set on Map</button>
+                    <input type="hidden" id="issue-lat">
+                    <input type="hidden" id="issue-lng">
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px;">Broadcast Issue</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Map Selection Hint -->
+    <div id="map-selection-hint" class="glass" style="display: none; position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 2000; padding: 15px 25px; border-radius: 50px; border: 2px solid var(--primary); box-shadow: 0 0 30px rgba(59, 130, 246, 0.4);">
+        <p style="font-weight: 700; font-size: 0.9rem;">Click anywhere on map to set issue location</p>
+    </div>
+
+    <!-- NGO Profile Modal -->
+    <div id="profile-modal" class="modal" style="display: none; align-items: center; justify-content: center;">
+        <div class="modal-content glass" style="width: 90%; max-width: 400px; padding: 25px; border-radius: var(--radius-lg);">
+            <h2 style="margin-bottom: 20px;">NGO Settings</h2>
+            <form id="profile-form">
+                <div class="input-group">
+                    <label>NGO Name</label>
+                    <input type="text" id="edit-ngo-name" required>
+                </div>
+                <div class="input-group">
+                    <label>Contact Info</label>
+                    <input type="text" id="edit-ngo-contact" placeholder="Email or Phone" required>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">Save</button>
+                    <button type="button" id="close-profile-modal" class="btn btn-secondary" style="flex: 1;">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- SOS Modal -->
+    <div id="sos-modal" class="modal" style="display: none; align-items: center; justify-content: center;">
+        <div class="modal-content glass" style="width: 90%; max-width: 430px; padding: 24px; border-radius: var(--radius-lg); border: 1px solid rgba(239, 68, 68, 0.4); background: linear-gradient(140deg, rgba(15, 23, 42, 0.95), rgba(127, 29, 29, 0.12)); position: relative;">
+            <button id="close-sos-modal" style="position: absolute; top: 12px; right: 12px; background: none; border: none; color: white; cursor: pointer;">
+                <i data-lucide="x"></i>
+            </button>
+            <h2 style="margin-bottom: 8px; color: #ef4444; font-size: 1.1rem;">SOS Command</h2>
+            <p style="margin-bottom: 14px; color: var(--text-muted); font-size: 0.8rem;">Send an emergency alert to all online volunteers.</p>
+            <form id="sos-form">
+                <div class="input-group" style="margin-bottom: 12px;">
+                    <label>Emergency Message</label>
+                    <textarea id="sos-message" rows="3" placeholder="Type emergency details..." required></textarea>
+                </div>
+                <button id="broadcast-sos-btn" type="submit" class="btn btn-primary" style="width: 100%; background: #ef4444; border-color: #ef4444;">Broadcast Alert</button>
+            </form>
+            <div id="active-sos-list" class="section-scroll" style="margin-top: 12px; max-height: 140px; gap: 8px;"></div>
+        </div>
+    </div>
+
+    <!-- Approve Report Eligibility Modal -->
+    <div id="approve-report-modal" class="modal" style="display: none; align-items: center; justify-content: center;">
+        <div class="modal-content glass" style="width: 90%; max-width: 520px; padding: 24px; border-radius: var(--radius-lg); position: relative;">
+            <button id="close-approve-report-modal" style="position: absolute; top: 12px; right: 12px; background: none; border: none; color: white; cursor: pointer;">
+                <i data-lucide="x"></i>
+            </button>
+            <h2 style="margin-bottom: 14px;">Approve Report & Set Eligibility</h2>
+            <form id="approve-report-form">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px;">
+                    <div class="input-group" style="margin-bottom: 0;">
+                        <label>Minimum Age</label>
+                        <input type="number" id="approve-min-age" min="18" max="80" value="18">
+                    </div>
+                    <div class="input-group" style="margin-bottom: 0;">
+                        <label>Language Needed</label>
+                        <select id="approve-language">
+                            <option value="any">Any</option>
+                            <option value="hindi">Hindi</option>
+                            <option value="english">English</option>
+                            <option value="telugu">Telugu</option>
+                            <option value="tamil">Tamil</option>
+                            <option value="kannada">Kannada</option>
+                            <option value="marathi">Marathi</option>
+                            <option value="bengali">Bengali</option>
+                        </select>
+                    </div>
+                    <div class="input-group" style="margin-bottom: 0;">
+                        <label>Min Experience (Years)</label>
+                        <input type="number" id="approve-min-experience" min="0" max="30" value="0">
+                    </div>
+                    <div class="input-group" style="margin-bottom: 0;">
+                        <label>Preferred Profession</label>
+                        <select id="approve-profession">
+                            <option value="any">Any</option>
+                            <option value="medical">Medical</option>
+                            <option value="driver">Driver</option>
+                            <option value="rescue">Rescue Worker</option>
+                            <option value="logistics">Logistics</option>
+                            <option value="teacher">Teacher</option>
+                            <option value="social-worker">Social Worker</option>
+                            <option value="it-support">IT Support</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="input-group" style="margin-bottom: 14px;">
+                    <label>Required Skills (comma-separated)</label>
+                    <input type="text" id="approve-required-skills" placeholder="e.g. First Aid, Driving, Coordination">
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Approve & Notify Active Volunteers</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    <script type="module" src="js/ngo.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+    <div id="ai-status-toast" class="card glass" style="position: fixed; bottom: 20px; left: 20px; right: 20px; padding: 15px; border-radius: var(--radius-md); display: none; z-index: 1000; animation: fadeIn 0.3s ease;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <div id="ai-spinner" class="pulse" style="width: 10px; height: 10px; background: var(--primary); border-radius: 50%;"></div>
+            <span id="ai-status-text" style="font-size: 0.8rem; font-weight: 600;"></span>
+        </div>
+    </div>
+</body>
+</html>
+

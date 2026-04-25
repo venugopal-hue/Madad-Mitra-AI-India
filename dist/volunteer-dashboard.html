@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Volunteer Dashboard | Madad Mitra AI</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+  <script type="module" crossorigin src="/assets/volunteer-_SwRJ0mb.js"></script>
+  <link rel="modulepreload" crossorigin href="/assets/config-BuoMdFOj.js">
+  <link rel="stylesheet" crossorigin href="/assets/config-CX-xi7fS.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar: Task Requests & Profile -->
+        <aside class="sidebar glass">
+            <!-- Heartbeat Sync Bar (Elite Version) -->
+            <div id="heartbeat-indicator" class="glass panel-strip panel-strip-primary">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <div class="pulse" style="width: 8px; height: 8px; background: var(--primary); border-radius: 50%; box-shadow: 0 0 10px var(--primary);"></div>
+                        <span style="font-size: 0.65rem; font-weight: 800; color: var(--primary); letter-spacing: 2px;">SYSTEM PULSE</span>
+                    </div>
+                    <span id="pulse-timer" style="font-size: 0.6rem; color: var(--text-muted); font-weight: 700;">Syncing...</span>
+                </div>
+                <div style="width: 100%; height: 4px; background: rgba(255,255,255,0.05); border-radius: 2px; overflow: hidden;">
+                    <div id="pulse-bar" style="height: 100%; background: var(--primary); width: 0%; box-shadow: 0 0 15px rgba(59, 130, 246, 0.5); transition: width 10s linear;"></div>
+                </div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <i data-lucide="user" style="color: var(--secondary);"></i>
+                    <h2 class="sidebar-title">Volunteer Portal</h2>
+                </div>
+                <button id="logout-btn" class="btn btn-secondary" style="padding: 8px 12px; font-size: 0.8rem;">Logout</button>
+            </div>
+
+            <!-- Volunteer Elite Identity Card -->
+            <div class="glass identity-card" style="position: relative; overflow: hidden;">
+                <div style="position: absolute; top: -10px; right: -10px; opacity: 0.05;">
+                    <i data-lucide="fingerprint" size="80"></i>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px;">
+                    <div>
+                        <h3 id="vol-name" style="font-size: 1.1rem; font-weight: 800; color: white; letter-spacing: 0.5px; margin-bottom: 4px;">Loading...</h3>
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <span id="vol-rating" class="badge" style="background: rgba(16, 185, 129, 0.1); color: var(--secondary); font-size: 0.6rem; font-weight: 800;">TASKS 0</span>
+                            <span class="badge" style="background: rgba(59, 130, 246, 0.1); color: var(--primary); font-size: 0.6rem; font-weight: 800; text-transform: uppercase;">Verified Volunteer</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="input-group" style="margin-bottom: 0;">
+                    <label style="font-size: 0.6rem; letter-spacing: 1px; color: var(--primary);">OPS STATUS</label>
+                    <select id="vol-status" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; font-size: 0.8rem; padding: 8px;">
+                        <option value="online">Available for Missions</option>
+                        <option value="soon">Resting (2h)</option>
+                        <option value="later">On Standby</option>
+                        <option value="offline">Offline</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 10px; margin-bottom: 20px; background: linear-gradient(145deg, rgba(30, 41, 59, 0.55), rgba(15, 23, 42, 0.55)); padding: 5px; border-radius: var(--radius-md); border: 1px solid rgba(255, 255, 255, 0.08);">
+                <button id="tab-tasks" class="btn btn-primary" style="flex: 1; padding: 8px; font-size: 0.8rem;">Tasks</button>
+                <button id="tab-profile" class="btn btn-secondary" style="flex: 1; padding: 8px; font-size: 0.8rem;">Profile</button>
+            </div>
+
+            <!-- Volunteer Arena -->
+            <div class="glass intel-card" style="margin-bottom: 20px; padding: 18px;">
+                <h3 style="font-size: 0.8rem; color: var(--secondary); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 14px; font-weight: 800;">Volunteer Arena</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+                    <div class="metric-tile">
+                        <p style="font-size: 0.68rem; color: var(--text-muted); margin-bottom: 6px;">YOUR STREAKS</p>
+                        <p id="vol-streak-count" style="font-size: 1.3rem; font-weight: 800; color: #f59e0b;">0</p>
+                    </div>
+                    <div class="metric-tile">
+                        <p style="font-size: 0.68rem; color: var(--text-muted); margin-bottom: 6px;">NEXT STREAK IN</p>
+                        <p id="vol-next-streak" style="font-size: 1.3rem; font-weight: 800; color: var(--primary);">5</p>
+                    </div>
+                </div>
+                <p id="streak-helper-text" style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 12px;">Complete 5 issues to unlock your first streak.</p>
+                <h4 style="font-size: 0.78rem; color: var(--primary); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 10px;">Top Volunteers</h4>
+                <div id="leaderboard-list" style="display: flex; flex-direction: column; gap: 8px;">
+                    <p style="font-size:0.78rem;color:var(--text-muted);">Loading leaderboard...</p>
+                </div>
+            </div>
+
+            <!-- TASK VIEW -->
+            <div id="task-view">
+                <div id="sections-container" class="section-scroll" style="max-height: calc(100vh - 300px); gap: 16px;">
+                    <!-- ACTIVE REQUESTS -->
+                    <section class="status-section">
+                        <h3 class="status-heading" style="color: var(--accent);">
+                            New Requests <span class="status-indicator" style="background: var(--accent);"></span>
+                        </h3>
+                        <div id="request-list" style="display: flex; flex-direction: column; gap: 12px;"></div>
+                    </section>
+
+                    <!-- ACTIVE TASKS -->
+                    <section class="status-section">
+                        <h3 class="status-heading" style="color: var(--primary);">
+                            On-Going Missions <span class="status-indicator" style="background: var(--primary);"></span>
+                        </h3>
+                        <div id="active-task-list" style="display: flex; flex-direction: column; gap: 12px;"></div>
+                    </section>
+
+                    <!-- UNDER REVIEW -->
+                    <section class="status-section">
+                        <h3 class="status-heading" style="color: #8b5cf6;">
+                            Under Review <span class="status-indicator" style="background: #8b5cf6;"></span>
+                        </h3>
+                        <div id="review-task-list" style="display: flex; flex-direction: column; gap: 12px;"></div>
+                    </section>
+
+                    <!-- PAST TASKS -->
+                    <section class="status-section">
+                        <h3 class="status-heading" style="color: var(--secondary);">
+                            Completed Missions <span class="status-indicator" style="background: var(--secondary);"></span>
+                        </h3>
+                        <div id="past-task-list" style="display: flex; flex-direction: column; gap: 12px;"></div>
+                    </section>
+
+                    <!-- IGNORED TASKS -->
+                    <section class="status-section">
+                        <h3 class="status-heading" style="color: var(--text-muted);">
+                            Ignored Requests <span class="status-indicator" style="background: var(--text-muted);"></span>
+                        </h3>
+                        <div id="ignored-task-list" style="display: flex; flex-direction: column; gap: 12px;"></div>
+                    </section>
+                </div>
+            </div>
+
+            <!-- PROFILE VIEW -->
+            <div id="profile-view" class="section-scroll" style="display: none; max-height: calc(100vh - 300px); gap: 20px;">
+                <div class="card glass" style="padding: 15px;">
+                    <h3 style="font-size: 0.9rem; margin-bottom: 15px;">Account Settings</h3>
+                    <div class="input-group">
+                        <label>Phone Number</label>
+                        <input type="text" id="edit-phone" placeholder="+91 98765 43210">
+                    </div>
+                    <div class="input-group">
+                        <label>Email Address</label>
+                        <input type="email" id="edit-email" readonly style="opacity: 0.6; cursor: not-allowed;">
+                    </div>
+                    <div class="input-group">
+                        <label>Professional Skills</label>
+                        <textarea id="edit-skills" rows="2" placeholder="First Aid, Medical, Driving..."></textarea>
+                        <div id="recommended-skills" style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px;">
+                            <span class="skill-chip" onclick="window.addSkill('Medical')">+ Medical</span>
+                            <span class="skill-chip" onclick="window.addSkill('Logistics')">+ Logistics</span>
+                            <span class="skill-chip" onclick="window.addSkill('First Aid')">+ First Aid</span>
+                            <span class="skill-chip" onclick="window.addSkill('Driving')">+ Driving</span>
+                            <span class="skill-chip" onclick="window.addSkill('Rescue')">+ Rescue</span>
+                            <span class="skill-chip" onclick="window.addSkill('Food Distribution')">+ Food</span>
+                            <span class="skill-chip" onclick="window.addSkill('Tech Support')">+ Tech</span>
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <div class="input-group" style="margin-bottom: 0;">
+                            <label>Age</label>
+                            <input type="number" id="edit-age" min="18" max="80" placeholder="e.g. 29">
+                        </div>
+                        <div class="input-group" style="margin-bottom: 0;">
+                            <label>Experience (Years)</label>
+                            <input type="number" id="edit-experience" min="0" max="30" placeholder="e.g. 3">
+                        </div>
+                        <div class="input-group" style="margin-bottom: 0;">
+                            <label>Primary Language</label>
+                            <select id="edit-language">
+                                <option value="">Select Language</option>
+                                <option value="hindi">Hindi</option>
+                                <option value="english">English</option>
+                                <option value="telugu">Telugu</option>
+                                <option value="tamil">Tamil</option>
+                                <option value="kannada">Kannada</option>
+                                <option value="marathi">Marathi</option>
+                                <option value="bengali">Bengali</option>
+                            </select>
+                        </div>
+                        <div class="input-group" style="margin-bottom: 0;">
+                            <label>Profession</label>
+                            <select id="edit-profession">
+                                <option value="">Select Profession</option>
+                                <option value="medical">Medical</option>
+                                <option value="driver">Driver</option>
+                                <option value="rescue">Rescue Worker</option>
+                                <option value="logistics">Logistics</option>
+                                <option value="teacher">Teacher</option>
+                                <option value="social-worker">Social Worker</option>
+                                <option value="it-support">IT Support</option>
+                                <option value="student">Student</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button id="update-profile-btn" class="btn btn-primary" style="width: 100%;">Save Changes</button>
+                </div>
+
+                <div class="card glass" style="padding: 15px;">
+                    <h3 style="font-size: 0.9rem; margin-bottom: 15px; color: var(--danger);">Security</h3>
+                    <div class="input-group">
+                        <label>New Password</label>
+                        <input type="password" id="new-password" placeholder="Min 6 characters">
+                    </div>
+                    <button id="change-password-btn" class="btn btn-secondary" style="width: 100%; border-color: var(--danger); color: var(--danger);">Update Password</button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Map Area -->
+        <main style="flex: 1; position: relative;">
+            <div id="map" style="width: 100%; height: 100%;"></div>
+            
+            <!-- Map Controls -->
+            <div style="position: absolute; top: 20px; right: 20px; z-index: 2000;">
+                <button id="open-report-modal-btn" class="btn glass map-control-btn" style="margin-bottom:10px; color: var(--accent); border-color: rgba(245,158,11,0.6); box-shadow: 0 0 18px rgba(245,158,11,0.24);">
+                    <i data-lucide="triangle-alert"></i>
+                </button>
+                <button id="locate-me-btn" class="btn glass map-control-btn">
+                    <i data-lucide="crosshair"></i>
+                </button>
+            </div>
+            
+            <!-- New Task Alert (Compact Icon) -->
+            <div id="notification-bar" class="card glass" style="position: absolute; top: 20px; left: 50%; transform: translateX(-50%); width: 50px; height: 50px; border-radius: 50%; z-index: 1000; display: none; align-items: center; justify-content: center; border-color: var(--primary); box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);">
+                <i data-lucide="map-pin" class="pulse" style="color: var(--primary); width: 24px; height: 24px;"></i>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+
+    <!-- Volunteer Issue Report Modal -->
+    <div id="report-modal" class="modal" style="display:none; align-items:center; justify-content:center;">
+        <div class="modal-content glass" style="width:90%; max-width:500px; padding:24px; border-radius: var(--radius-lg); position:relative;">
+            <button id="close-report-modal" style="position:absolute; top:12px; right:12px; background:none; border:none; color:white; cursor:pointer;">
+                <i data-lucide="x"></i>
+            </button>
+            <h2 style="margin-bottom:16px;">Report New Issue</h2>
+            <form id="report-issue-form">
+                <div class="input-group">
+                    <label>Issue Title</label>
+                    <input type="text" id="report-title" placeholder="e.g. Road Accident near market" required>
+                </div>
+                <div class="input-group">
+                    <label>Description</label>
+                    <textarea id="report-description" rows="3" placeholder="Describe what happened..." required></textarea>
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                    <div class="input-group" style="margin-bottom:0;">
+                        <label>Issue Type</label>
+                        <select id="report-category">
+                            <option value="medical-emergency">Medical Emergency</option>
+                            <option value="road-accident">Road Accident</option>
+                            <option value="fire-response">Fire Response</option>
+                            <option value="flood-relief">Flood Relief</option>
+                            <option value="food-distribution">Food Distribution</option>
+                            <option value="water-shortage">Water Shortage</option>
+                            <option value="elderly-support">Elderly Support</option>
+                            <option value="child-support">Child Support</option>
+                            <option value="missing-person">Missing Person Search</option>
+                            <option value="blood-donation">Blood Donation Need</option>
+                            <option value="rescue-evacuation">Rescue / Evacuation</option>
+                            <option value="shelter-support">Shelter Support</option>
+                        </select>
+                    </div>
+                    <div class="input-group" style="margin-bottom:0;">
+                        <label>Urgency</label>
+                        <select id="report-urgency">
+                            <option value="low">Low</option>
+                            <option value="medium">Medium</option>
+                            <option value="high">High</option>
+                            <option value="critical">Critical</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width:100%; margin-top:14px;">Submit Report</button>
+            </form>
+        </div>
+    </div>
+    <div id="ai-status-toast" class="card glass" style="position: fixed; bottom: 20px; left: 20px; right: 20px; padding: 15px; border-radius: var(--radius-md); display: none; z-index: 1000; animation: fadeIn 0.3s ease;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <div id="ai-spinner" class="pulse" style="width: 10px; height: 10px; background: var(--primary); border-radius: 50%;"></div>
+            <span id="ai-status-text" style="font-size: 0.8rem; font-weight: 600;"></span>
+        </div>
+    </div>
+</body>
+</html>
+

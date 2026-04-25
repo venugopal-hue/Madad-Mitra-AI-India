@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logo Options - Madad Mitra AI</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            background: #020617;
+            color: #f8fafc;
+            font-family: 'Inter', system-ui, sans-serif;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 50px;
+            font-size: 2.5rem;
+        }
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        .option-card {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .option-card:hover {
+            border-color: rgba(59, 130, 246, 0.8);
+            background: rgba(59, 130, 246, 0.1);
+            transform: translateY(-5px);
+        }
+        .option-number {
+            font-size: 0.9rem;
+            color: #94a3b8;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .logo-preview {
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+        }
+        .logo-text {
+            font-weight: 800;
+            letter-spacing: 2px;
+            font-size: 0.9rem;
+            margin-top: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .option-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin: 15px 0;
+        }
+        .option-desc {
+            font-size: 0.9rem;
+            color: #94a3b8;
+            line-height: 1.6;
+        }
+        .note {
+            text-align: center;
+            color: #94a3b8;
+            margin-top: 40px;
+            padding-top: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Alternative Logo Designs</h1>
+        
+        <div class="options-grid">
+            <!-- Option A -->
+            <div class="option-card">
+                <div class="option-number">Option A</div>
+                <div class="logo-preview">
+                    <div style="display: flex; align-items: center; gap: 12px; font-size: 2rem; font-weight: 800; letter-spacing: -2px;">
+                        <span style="color: #10b981;">M</span><span style="color: #3b82f6;">M</span>
+                    </div>
+                </div>
+                <div class="logo-text">
+                    <span style="color: #94a3b8; font-size: 0.75rem;">Minimalist Monogram</span>
+                </div>
+                <div class="option-title">MM Badge</div>
+                <div class="option-desc">Bold, minimal monogram - clean two-letter mark with dual colors representing both roles</div>
+            </div>
+
+            <!-- Option B - KEEP THIS -->
+            <div class="option-card" style="border-color: #10b981; background: rgba(16, 185, 129, 0.15);">
+                <div class="option-number" style="color: #10b981;">✓ Option B (RECOMMENDED)</div>
+                <div class="logo-preview">
+                    <div style="font-size: 3.5rem;">🤝</div>
+                </div>
+                <div class="logo-text">
+                    <span style="color: #10b981;">MADAD MITRA</span>
+                </div>
+                <div class="option-title">Simple Handshake</div>
+                <div class="option-desc">Universal, warm, modern - instantly conveys partnership and collaboration</div>
+            </div>
+
+            <!-- Option C -->
+            <div class="option-card">
+                <div class="option-number">Option C</div>
+                <div class="logo-preview">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <i data-lucide="globe" size="48" style="color: #3b82f6;"></i>
+                    </div>
+                </div>
+                <div class="logo-text">
+                    <span style="color: #3b82f6;">MADAD MITRA</span>
+                </div>
+                <div class="option-title">Global Network</div>
+                <div class="option-desc">Globe icon - emphasizes worldwide community reach and global volunteer network</div>
+            </div>
+
+            <!-- Option D -->
+            <div class="option-card">
+                <div class="option-number">Option D</div>
+                <div class="logo-preview">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <i data-lucide="leaf" size="48" style="color: #10b981;"></i>
+                    </div>
+                </div>
+                <div class="logo-text">
+                    <span style="color: #10b981;">MADAD MITRA</span>
+                </div>
+                <div class="option-title">Growth & Care</div>
+                <div class="option-desc">Leaf symbol - represents growth, sustainability, and nurturing of communities</div>
+            </div>
+
+            <!-- Option E -->
+            <div class="option-card">
+                <div class="option-number">Option E</div>
+                <div class="logo-preview">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <i data-lucide="heart" size="48" style="color: #ef4444;"></i>
+                    </div>
+                </div>
+                <div class="logo-text">
+                    <span style="color: #ef4444;">MADAD MITRA</span>
+                </div>
+                <div class="logo-text" style="margin-top: 5px;">
+                    <span style="color: #94a3b8; font-size: 0.7rem;">Care & Compassion</span>
+                </div>
+                <div class="option-title">Pure Heart</div>
+                <div class="option-desc">Simple red heart - raw emotion of care and community love</div>
+            </div>
+
+            <!-- Option F -->
+            <div class="option-card">
+                <div class="option-number">Option F</div>
+                <div class="logo-preview">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <i data-lucide="users" size="48" style="color: #10b981;"></i>
+                    </div>
+                </div>
+                <div class="logo-text">
+                    <span style="color: #10b981;">MADAD MITRA</span>
+                </div>
+                <div class="option-title">Community Group</div>
+                <div class="option-desc">Multiple people icon - represents unity and collective action of volunteers</div>
+            </div>
+
+            <!-- Option G -->
+            <div class="option-card">
+                <div class="option-number">Option G</div>
+                <div class="logo-preview">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <i data-lucide="check-circle" size="48" style="color: #10b981;"></i>
+                    </div>
+                </div>
+                <div class="logo-text">
+                    <span style="color: #10b981;">MADAD MITRA</span>
+                </div>
+                <div class="option-title">Verified Trust</div>
+                <div class="option-desc">Check mark circle - builds trust and reliability in the community platform</div>
+            </div>
+
+            <!-- Option H -->
+            <div class="option-card">
+                <div class="option-number">Option H</div>
+                <div class="logo-preview">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <i data-lucide="target" size="48" style="color: #3b82f6;"></i>
+                    </div>
+                </div>
+                <div class="logo-text">
+                    <span style="color: #3b82f6;">MADAD MITRA</span>
+                </div>
+                <div class="option-title">Focused Mission</div>
+                <div class="option-desc">Target icon - represents focused goals and coordinated community missions</div>
+            </div>
+
+            <!-- Option I -->
+            <div class="option-card">
+                <div class="option-number">Option I</div>
+                <div class="logo-preview">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <i data-lucide="shield" size="48" style="color: #f59e0b;"></i>
+                    </div>
+                </div>
+                <div class="logo-text">
+                    <span style="color: #f59e0b;">MADAD MITRA</span>
+                </div>
+                <div class="option-title">Community Shield</div>
+                <div class="option-desc">Shield for protection - safeguards community and emergency response system</div>
+            </div>
+
+            <!-- Option J -->
+            <div class="option-card">
+                <div class="option-number">Option J</div>
+                <div class="logo-preview">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <i data-lucide="link" size="48" style="color: #06b6d4;"></i>
+                    </div>
+                </div>
+                <div class="logo-text">
+                    <span style="color: #06b6d4;">MADAD MITRA</span>
+                </div>
+                <div class="option-title">Connection Link</div>
+                <div class="option-desc">Chain link - connects volunteers with NGOs and communities seamlessly</div>
+            </div>
+
+            <!-- Option K -->
+            <div class="option-card">
+                <div class="option-number">Option K</div>
+                <div class="logo-preview">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <i data-lucide="activity" size="48" style="color: #ef4444;"></i>
+                    </div>
+                </div>
+                <div class="logo-text">
+                    <span style="color: #ef4444;">MADAD MITRA</span>
+                </div>
+                <div class="option-title">Pulse of Care</div>
+                <div class="option-desc">Heartbeat/activity - represents vital community pulse and constant help</div>
+            </div>
+
+            <!-- Option L -->
+            <div class="option-card">
+                <div class="option-number">Option L</div>
+                <div class="logo-preview">
+                    <div style="display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 5px;">
+                        <span style="font-size: 1.8rem; font-weight: 900; background: linear-gradient(135deg, #10b981, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -2px;">MADAD</span>
+                    </div>
+                </div>
+                <div class="logo-text">
+                    <span style="color: #94a3b8; font-size: 0.75rem;">Full Text Mark</span>
+                </div>
+                <div class="option-title">Text Logo</div>
+                <div class="option-desc">Gradient typography - bold, modern, and stands strong as text-only branding</div>
+            </div>
+        </div>
+
+        <div class="note">
+            <p>💡 <strong>Which one catches your eye? (A-L) — Option B is highlighted as recommended!</strong></p>
+            <p style="margin-top: 10px; font-size: 0.85rem;">Choose your favorite or tell me to blend ideas from multiple options!</p>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>
