@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -12,15 +12,16 @@
         html {
             height: 100%;
             margin: 0;
-            overflow: hidden;
+            overflow-x: hidden;
+            overflow-y: auto;
             font-family: 'Inter', sans-serif;
             background: #000;
         }
 
         .split-container {
             display: flex;
-            height: 100vh;
-            width: 100vw;
+            min-height: 100vh;
+            width: 100%;
         }
 
         .split {
@@ -151,8 +152,9 @@
 
         .content {
             z-index: 10;
-            width: min(100%, 420px);
-            min-height: 420px;
+            width: 100%;
+            max-width: 420px;
+            min-height: auto;
             animation: fadeIn 0.8s ease;
             background: rgba(0, 0, 0, 0.4);
             backdrop-filter: blur(5px);
@@ -270,127 +272,91 @@
         }
 
         @media (max-width: 768px) {
-            body,
-            html {
-                overflow: auto;
+            body, html {
+                overflow: hidden;
+                height: 100%;
             }
 
             .split-container {
                 flex-direction: column;
-                min-height: auto;
-                height: auto;
-            }
-
-            h1 {
-                font-size: 1.6rem;
-                margin-bottom: 12px;
-            }
-
-            p {
-                font-size: 0.9rem;
-                margin-bottom: 24px;
-                line-height: 1.5;
+                height: 100vh;
+                min-height: 100vh;
+                overflow: hidden;
             }
 
             .split {
-                padding: 24px 16px;
-                min-height: auto;
-                padding-top: 80px;
-                padding-bottom: 40px;
-            }
-
-            .split::before {
-                opacity: 0;
-            }
-
-            .volunteer-side {
-                background: linear-gradient(135deg, rgba(16, 185, 129, 0.5), rgba(0, 20, 15, 0.8)) !important;
-            }
-
-            .ngo-side {
-                background: linear-gradient(135deg, rgba(59, 130, 246, 0.35), rgba(0, 10, 30, 0.85)) !important;
-            }
-
-            .content {
-                padding: 20px;
-                min-height: auto;
-                width: 100%;
-                background: rgba(0, 0, 0, 0.45) !important;
-            }
-
-            .icon-circle {
-                width: 70px;
-                height: 70px;
-                margin-bottom: 16px;
-            }
-
-            .btn-group {
-                gap: 10px;
-            }
-
-            .btn-choice {
-                padding: 12px 10px;
-                font-size: 0.75rem;
+                flex: 1;
+                min-height: 0;
+                height: 50vh;
+                padding: 0 16px;
+                justify-content: center;
+                overflow: hidden;
             }
 
             .logo-top {
-                top: 16px;
-                padding: 10px 16px;
-                font-size: 0.9rem;
-            }
-
-            .radar-container {
-                width: 200px;
-                height: 200px;
-                opacity: 0.08;
-            }
-        }
-
-        @media (max-width: 480px) {
-            h1 {
-                font-size: 1.4rem;
-                margin-bottom: 10px;
-            }
-
-            p {
-                font-size: 0.85rem;
-                margin-bottom: 20px;
-            }
-
-            .split {
-                padding: 20px 12px;
-                padding-top: 70px;
-                padding-bottom: 30px;
-            }
-
-            .split::before {
-                opacity: 0;
+                top: 10px;
+                padding: 7px 14px;
+                font-size: 0.78rem;
             }
 
             .content {
-                padding: 16px;
-                border-radius: 12px;
-                background: rgba(0, 0, 0, 0.5) !important;
+                padding: 14px 16px;
+                width: 100%;
+                max-width: 100%;
+                background: rgba(0, 0, 0, 0.35) !important;
             }
 
             .icon-circle {
-                width: 60px;
-                height: 60px;
-                margin-bottom: 12px;
+                width: 44px;
+                height: 44px;
+                margin-bottom: 6px;
+            }
+
+            h1 {
+                font-size: 1.15rem;
+                margin-bottom: 4px;
+            }
+
+            p {
+                font-size: 0.76rem;
+                margin-bottom: 10px;
+                line-height: 1.4;
+            }
+
+            .btn-group {
+                gap: 8px;
             }
 
             .btn-choice {
-                padding: 11px 8px;
-                font-size: 0.7rem;
-                letter-spacing: 0.5px;
+                padding: 9px 10px;
+                font-size: 0.68rem;
+            }
+
+            .volunteer-side {
+                border-bottom: 1px solid rgba(255,255,255,0.1);
             }
 
             .radar-container {
-                width: 150px;
-                height: 150px;
-                opacity: 0.05;
+                width: 110px;
+                height: 110px;
+                opacity: 0.07;
+            }
+
+            .form-group {
+                margin-bottom: 8px;
+            }
+
+            .form-group input {
+                padding: 8px 12px;
+                font-size: 0.82rem;
+            }
+
+            .back-btn {
+                margin-bottom: 8px;
+                font-size: 0.8rem;
             }
         }
+
 
         .auth-form {
             display: none;
@@ -652,6 +618,10 @@
         }
         animate();
     </script>
+
+
+
+
 </body>
 
 </html>
